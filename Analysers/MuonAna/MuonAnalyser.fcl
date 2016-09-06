@@ -1,0 +1,9 @@
+BEGIN_PROLOG
+
+standard_muonana:
+{
+ module_type:  MuonAnalyzer
+ pdg: 13
+}
+
+END_PROLOG

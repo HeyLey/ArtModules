@@ -1,0 +1,10 @@
+BEGIN_PROLOG
+
+standard_geniefilter:
+{
+  module_type: GENIEFilter
+
+  GENIELabel: "generator"
+}
+
+END_PROLOG

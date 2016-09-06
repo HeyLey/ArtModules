@@ -1,0 +1,80 @@
+BEGIN_PROLOG
+
+standard_geo:
+{
+  GDML: "" # GDML is stored in the ART run
+
+  ndos:
+  {
+    BigBoxUsed: false
+    BigBoxRange: 1500   #in cm
+    FiducialVolumeXHi: 20
+    FiducialVolumeXLo: 20
+    FiducialVolumeYHi: 20
+    FiducialVolumeYLo: 20
+    FiducialVolumeZHi: 20
+    FiducialVolumeZLo: 20
+  }
+
+  nd:
+  {
+    BigBoxUsed: false
+    BigBoxRange: 1500   #in cm
+    FiducialVolumeXHi: 20
+    FiducialVolumeXLo: 20
+    FiducialVolumeYHi: 20
+    FiducialVolumeYLo: 20
+    FiducialVolumeZHi: 20
+    FiducialVolumeZLo: 20
+  }
+
+  fd:
+  {
+    BigBoxUsed: false
+    BigBoxRange: 7500   #in cm
+    FiducialVolumeXHi: 50
+    FiducialVolumeXLo: 50
+    FiducialVolumeYHi: 50
+    FiducialVolumeYLo: 50
+    FiducialVolumeZHi: 50
+    FiducialVolumeZLo: 50
+  }
+
+  StoreTempGeo: "/tmp"  #folder to store temporary geometry files in
+  }
+
+
+
+  # Use these only for event generation, where the Geometry would otherwise have
+  # no way of knowing what to be.
+
+  ndos_geo: @local::standard_geo
+  ndos_geo.GDML: "Geometry/gdml/ndos-2x3-6block-xtru-vacuum.gdml"
+
+  ndos_2db_geo: @local::standard_geo
+  ndos_2db_geo.GDML: "Geometry/gdml/ndos-2x3-4block_nomc-xtru-vacuum.gdml"
+
+  ndos_nosteel_geo: @local::standard_geo
+  ndos_nosteel_geo.GDML: "Geometry/gdml/ndos-2x3-6block_nomc-xtru-vacuum.gdml"
+
+  nd_geo: @local::standard_geo
+  nd_geo.GDML: "Geometry/gdml/neardet-3x3-8block-xtru-vacuum-stagger.gdml"
+
+  fd_28blockstaggergeo: @local::standard_geo
+  fd_28blockstaggergeo.GDML: "Geometry/gdml/fardet-12x12-28block-xtru-vacuum-stagger.gdml"
+
+  fd_28blockstaggerpivotergeo: @local::standard_geo
+  fd_28blockstaggerpivotergeo.GDML: "Geometry/gdml/fardet-12x12-28block-xtru-vacuum-stagger-pivoter.gdml"
+
+  fd_28blockstaggerpivotergeo12inbr: @local::standard_geo
+  fd_28blockstaggerpivotergeo12inbr.GDML: "Geometry/gdml/fardet-12x12-28block-xtru-vacuum-stagger-pivoter-12Inch_Barite.gdml"
+
+  fd_28blockstaggerpivotergeocosmicshield: @local::standard_geo
+  fd_28blockstaggerpivotergeocosmicshield.GDML: "Geometry/gdml/fardet-12x12-28block-xtru-vacuum-stagger-pivoter-cosmicshielding.gdml"
+
+  fd_28blockstaggerrandpivotergeo: @local::standard_geo
+  fd_28blockstaggerrandpivotergeo.GDML: "Geometry/gdml/fardet-12x12-28block-xtru-vacuum-stagger_rand-pivoter.gdml"
+
+  fd_geo: @local::fd_28blockstaggerpivotergeo
+
+  END_PROLOG

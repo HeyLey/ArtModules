@@ -1,0 +1,76 @@
+#include "services.fcl"
+#include "SingleGen.fcl"
+#include "G4Gen.fcl"
+#include "ReadoutSim.fcl"
+#include "ImprovedTransport.fcl"
+#include "OccupiedSpillFilter.fcl"
+#include "Metadata.fcl"
+
+process_name: SingleParticle
+services:
+{
+
+  TFileService: { fileName: "single_hist.root" closeFileFast: false }
+  TimeTracker: {}
+  RandomNumberGenerator: {}
+  @table::standard_services
+}
+
+services.Geometry: @local::nd_geo
+
+
+source:
+{
+  module_type: EmptyEvent
+  maxEvents:   10000
+  firstRun:    1
+  firstSubRun: 1
+  firstEvent:  1
+}
+
+
+physics:
+{
+
+ producers:
+ {
+   generator: @local::standard_singlep
+   geantgen:  @local::standard_geant4
+   photrans:  @local::standard_photrans
+   daq:       @local::noiseless_rsim
+   rns:       { module_type: "RandomNumberSaver" }
+
+   }
+
+    filters:
+    {
+      occupied:  @local::standard_occupiedspillfilter
+    }
+
+    analyzers:
+    {
+      metadata: @local::standard_metadata
+    }
+
+    simulate: [ generator, geantgen, photrans, daq ]
+
+    stream1:  [ out1 ]
+
+    trigger_paths: [ simulate ]
+
+    end_paths:     [ stream1 ]
+   }
+
+   outputs:
+   {
+    out1:
+     {
+      module_type: RootOutput
+      fileName:    "single_gen.root"
+      SelectEvents: { SelectEvents: [ simulate ] }
+     }
+   }
+
+   physics.producers.daq.nd.ForceGain: 100
+   physics.producers.daq.fd.ForceGain: 140
+   physics.producers.generator.PDG: [13]

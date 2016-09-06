@@ -1,0 +1,9 @@
+BEGIN_PROLOG
+
+standard_neutronana:
+{
+ module_type:  NeutronAnalyzer
+ pdg: 2112
+}
+
+END_PROLOG

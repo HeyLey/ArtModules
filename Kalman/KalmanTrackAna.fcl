@@ -1,0 +1,10 @@
+BEGIN_PROLOG
+
+standard_kalmantrackana:
+{
+module_type:       KalmanTrackAna
+SliceLabel:        "slicer"
+TrackLabel:        "kalmantrackmerge"
+}
+
+END_PROLOG

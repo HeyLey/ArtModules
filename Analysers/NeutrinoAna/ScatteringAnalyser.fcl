@@ -1,0 +1,9 @@
+BEGIN_PROLOG
+
+standard_scatana:
+{
+ module_type:  ScatteringAnalyzer
+ pgd: 13
+}
+
+END_PROLOG

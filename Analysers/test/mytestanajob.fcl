@@ -1,0 +1,31 @@
+#include "services.fcl"
+#include "MyTestAna.fcl"
+
+process_name: MyTestAna
+
+services:
+{
+  # Load the service that manages root files for histograms.
+  TFileService: { fileName: "mytestana_hist.root" closeFileFast: false }
+  @table::standard_services
+}
+
+source:
+{
+  module_type: RootInput
+}
+
+# Define and configure some modules to do work on each event.
+# First modules are defined; they are scheduled later.
+# Modules are grouped by type.
+physics:
+{
+  analyzers:
+  {
+    ana: @local::standard_mytestana
+  }
+
+  mytestana: [ ana ]
+
+  end_paths:     [mytestana]  #end_path are things that do not modify art::Event, includes analyzers and output modules. all items here can be run simultaneously
+}

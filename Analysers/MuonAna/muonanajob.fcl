@@ -1,0 +1,31 @@
+#include "MuonAnalyzer.fcl"
+#include "services.fcl"
+
+process_name: MuAnaProcess
+services: {
+ TFileService: { fileName: "muons_hist.root" closeFileFast: false }
+}
+
+source: {
+   module_type: RootInput
+}
+
+#outputs:
+#{
+# out1:
+#  {
+ #   module_type: RootOutput
+ #   fileName:    "muons_ana.root"
+
+#  }
+#}
+
+physics:
+{
+    analyzers:{
+        muonana:  @local::standard_muonana
+    }
+
+    ana: [ muonana ]
+    end_paths: [ ana ]
+}

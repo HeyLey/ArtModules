@@ -1,0 +1,10 @@
+BEGIN_PROLOG
+
+standard_livegeo:
+{
+  CheckBadChannels: true
+  Verbose:          false
+  CalHitLabel:      "calhit"
+}
+
+END_PROLOG

@@ -1,0 +1,29 @@
+BEGIN_PROLOG
+
+standard_kalmantrack:
+{
+
+ module_type:       KalmanTrack
+ ClusterInput:      "slicer"    # input module of clustered time slices
+ MaxSliceHits:      0.15        # Maximum fraction of number of cell hits per good channel in a single time slice in which a search for tracks will be perfomed
+ MaxHitCut:         2000        # Maximum number of hits in slice that the tracker will try to reconstruct
+ WhoaNelly:         1000        # Maximum number of seeds to use to make in one slice
+ DeltaChiAllowed:   8.0         # Maximum change in chi squared of track by the addition of any one hit
+ MinHits:           4           # Minimum number of hits for a track to exist
+ GapAllowed:        4           # Maximum number of empty cells between adjoining hits in track seeds
+ LargeSliceHits:    100         # Number of hits for which the algorithm will try to find single long track before finding smaller tracks
+ BadChannels:       true        # Set to true to allow the algorithm to track through bad channels
+ LongTrackLoop:     true        # Set to true to allow the algorithm to look for longer tracks first
+ MinGapProb:        0.0001      # Minimum acceptable probability of gap existing between hits
+ ObeyPreselection:  true        # should this Cluster be filtered?
+
+}
+
+mrcc_kalmantrack: @local::standard_kalmantrack
+mrcc_kalmantrack.ClusterInput: "slicermrcc"
+
+mre_kalmantrack: @local::standard_kalmantrack
+mre_kalmantrack.ClusterInput: "slicermre"
+
+
+END_PROLOG

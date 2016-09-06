@@ -1,0 +1,49 @@
+BEGIN_PROLOG
+
+standard_singlep:
+{
+ module_type:  SingleGen
+ PDG:          [13]      # Particle data group particle code
+ P0:           [2]     # Central momentum in GeV
+ SigmaP:       [1]     # Variation in momentum in GeV
+ PDist:        [0]       # How to vary momentum (0 = uniform, 1 = gaussian)
+ X0:           [0.0]     # central position in cm
+ Y0:           [0.0]     # central position in cm
+ Z0:           [700.0]   # central position in cm
+ T0:           [25000.0] # central time in ns
+ SigmaX:       [200.0]     # variation in x in cm
+ SigmaY:       [200.0]     # variation in y in cm
+ SigmaZ:       [700.0]     # variation in z in cm
+ SigmaT:       [25000.0]     # variation in time in ns
+ PosDist:      [0]       # How to vary positions (0=uniform, 1=gaussian)
+ CosZ0:        [0.0]     # Central value of cosine theta wrt z-axis
+ SigmaCosZ:    [1.0]     # Variation in cosine theta
+ PhiXY0:       [0]       # Central angle in xy plane (degrees)
+ SigmaPhiXY:   [180]     # Variation in phi (degrees)
+ AngleDist:    [0]       # How to vary angular parameters (0=uniform, 1=gaussian)
+}
+
+multi_singlep:
+{
+ module_type:  SingleGen
+ PDG:          [11, -11]                # e- ,e+  Particle data group particle code
+ P0:           [2.0, 2.0]               # Central momentum in GeV
+ SigmaP:       [0.0, 0.0]               # Variation in momentum in GeV
+ PDist:        [1,1]                    # How to vary momentum (0=uniform, 1=gaussian)
+ X0:           [0.0, 0.0]               # central position in cm
+ Y0:           [0.0, 0.0]               # central position in cm
+ Z0:           [20.0, 20.0]             # central position in cm
+ T0:           [14005.0, 14005.0]       # central time in ns
+ SigmaX:       [0.0, 0.0]               # variation in x in cm
+ SigmaY:       [0.0, 0.0]               # variation in y in cm
+ SigmaZ:       [0.0, 0.0]               # variation in z in cm
+  SigmaT:       [0.0, 0.0]               # variation in time in ns
+  PosDist:      [0, 0]                   # How to vary positions (0=uniform, 1=gaussian)
+  CosZ0:        [0.9, 0.9]               # Central value of cosine theta wrt z-axis for each particle
+  SigmaCosZ:    [0.0, 0.0]               # Variation in cosine theta
+  PhiXY0:       [45, 225]                # Central angle in xy plane (degrees) for each particle
+  SigmaPhiXY:   [0, 0]                   # Variation in phi (degrees)
+  AngleDist:    [1,1]                    # How to vary angular parameters (0=uniform, 1=gaussian)
+ }
+
+ END_PROLOG

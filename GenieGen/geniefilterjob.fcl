@@ -1,0 +1,45 @@
+#include "services.fcl"
+#include "GENIEFilter.fcl"
+
+process_name: GENIEFilter
+
+services:
+{
+  @table::standard_services
+  TimeTracker: {}
+  scheduler:    { wantTracer: true wantSummary: true }
+
+}
+
+source:
+{
+  module_type: RootInput
+}
+
+outputs:
+{
+ out1:
+  {
+      module_type: RootOutput
+      #default file name, can override from command line with -o or --output
+      fileName:    "genie.root"
+      fastCloning: false
+      SelectEvents: { SelectEvents: [ "geniefilt" ] }
+  }
+}
+
+# Define and configure some modules to do work on each event.
+# First modules are defined; they are scheduled later.
+# Modules are grouped by type.
+physics:
+{
+    filters:
+  {
+    geniefilter: @local::standard_geniefilter
+  }
+  geniefilt: [ geniefilter ] #list the modules for this path, order matters, filters reject all following items
+    stream1: [ out1 ]
+
+    trigger_paths: [geniefilt] #things that modify the art::Event, filters and producers go here
+    end_paths:     [stream1]  #end_path are things that do not modify art::Event, includes analyzers and output modules. all items here can be run simultaneously
+  }

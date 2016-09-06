@@ -1,0 +1,23 @@
+BEGIN_PROLOG
+
+standard_kalmantrackmerge:
+{
+ module_type:       KalmanTrackMerge
+ TrackInput:        "kalmantrack"    # input module of tracks
+ SliceInput:        "slicer"         # input module of slices
+ BadChannels:       true             # Do you want to account for bad channels?
+ ObeyPreselection:  true             # Check rb::IsFiltered?
+}
+
+mrcc_kalmantrackmerge: @local::standard_kalmantrackmerge
+mrcc_kalmantrackmerge.SliceInput:  "slicermrcc"
+mrcc_kalmantrackmerge.TrackInput:  "kalmantrackmrcc"
+
+
+mre_kalmantrackmerge: @local::standard_kalmantrackmerge
+mre_kalmantrackmerge.SliceInput:  "slicermre"
+mre_kalmantrackmerge.TrackInput:  "kalmantrackmre"
+
+
+
+END_PROLOG

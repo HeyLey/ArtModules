@@ -1,0 +1,67 @@
+#include "services.fcl"
+#include "CalHit.fcl"
+#include "Slicer4D.fcl"
+#include "KalmanTrack.fcl"
+#include "KalmanTrackMerge.fcl"
+
+process_name: KalmanTrack
+
+services:
+{
+  # Load the service that manages root files for histograms.
+  TFileService: { fileName: "reco_hist.root" closeFileFast: false}
+  scheduler:    { wantTracer: true wantSummary: true }
+  message:      @local::standard_out
+  TimeTracker: {}
+  @table::standard_services
+}
+
+#source is a root file
+source:
+{
+  module_type: RootInput
+  maxEvents:   -1  #Number of events to create
+}
+
+outputs:
+{
+  out1:
+  {
+   module_type: RootOutput
+   fileName:    "kalman_reco.root" #default file name, can override from commandline with -o or --output
+   fastCloning: false
+  }
+}
+
+# Define and configure some modules to do work on each event.
+# First modules are defined; they are scheduled later.
+# Modules are grouped by type.
+physics:
+{
+ producers:{
+ calhit:           @local::standard_calhit
+             slicer:           @local::standard_slicer4d
+             kalmantrack:      @local::standard_kalmantrack
+             kalmantrackmerge: @local::standard_kalmantrackmerge
+            }
+
+  filters:{}
+
+  analyzers:{}
+
+  #define the path for producer and filter modules, order matters,
+  #filters reject all following items.  see lines starting physics.producers below
+
+  reco: [calhit, slicer, kalmantrack, kalmantrackmerge]
+
+  #define the output stream, there could be more than one if using filters
+  stream1:  [ out1 ]
+
+  #trigger_paths is a keyword and contains the paths that modify the art::Event,
+  #ie filters and producers
+  trigger_paths: [reco]
+  #end_paths is a keyword and contains the paths that do not modify the art::Event,
+  #ie analyzers and output streams.  these all run simultaneously
+  end_paths:     [stream1]
+
+ }

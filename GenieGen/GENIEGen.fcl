@@ -1,0 +1,306 @@
+BEGIN_PROLOG
+
+standard_genie:
+{
+     module_type:      GENIEGen         #name of the module
+     PassEmptySpills:  true
+     FluxType:         mono             #histogram, ntuple, or simple_flux or mono
+     FluxFiles:        [ "*.root" ]     #name of file with flux histos or flux file extension
+     FluxSearchPaths:   "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}" #where ifdh should search for the flux files, the deeper the path the better
+     FluxCopyMethod:   "IFDH"         # IFDH or old "DIRECT" method.
+     FluxCleanup:      ""               # "ALWAYS", "NEVER" or "/var/tmp/"
+#    MaxFluxFileMB:    2000             # 2 GB limit per job - DO NOT touch this unless you really know what you're doing.
+     BeamName:         numi             #numi or booster at this point - really for bookkeeping
+     TopVolume:        vDetEnclosure    #volume in which to produce interactions - look at geometry to determine volume names
+# next two are now set in top level nd/ndos/fd so as to be sensible out of the box for all detectors
+#    EventsPerSpill:   0.0              #events per spill generated - will override POTPerSpill if non-zero.
+                                        #if non-zero exactly EventsPerSpill events will be made for each spill
+ #   POTPerSpill:      0.0              #number of protons on target (pot) per spill generated.
+
+     TotalPOTLimit:     0.0             # Set to a positive non-zero value to activate. For use in generating mock data.
+                                        #will pick a poisson number of interactions for each spill
+     MonoEnergy:       2.0              #energy for monoenergetic neutrinos if generating those in GEV
+     BeamCenter:       [0.25, 0.0, 0.0] #center of the beam in cm relative to detector coordinate origin, in meters for GENIE
+     BeamDirection:    [0.0 , 0.0, 1.0] #all in the z direction
+     BeamRadius:       3.0              #in meters for GENIE
+     SurroundingMass:  0.0              #mass surrounding the detector to use
+     GlobalTimeOffset: 218500.0         #in ns - 10000 means the spill appears 10 us into the readout window
+     RandomTimeOffset:   9600.0         #length of spill in ns
+     GenFlavors:       [12,14,16,-12,-14,-16]   #pdg code for which neutrinos to generate (at flux level)
+                                        #use of flavor mixing might result in others in actual interactions
+     Environment:      [ "obsolete", "obsolete" ]
+     XSecTable:        "gxspl-FNALsmall.xml"
+     DetectorLocation: "NOvA-ND"        #location name for flux window.
+                                        #name of detector see GNuMIFlux.xml from GENIE/src/FluxDrivers for list of allowed locations
+     MixerConfig:      "none"           #Configuration string for GFlavorMixerI (as part of GFluxBlender).
+                                        #If first word is other than "none" then use the GFluxBlender GENIE
+                                        #flux adapter to modify the neutrino flavors coming from the
+                                        #real flux generator.  Currently "none", "swap", "fixedfrac" are
+                                        #the supported schemes, e.g. " swap 12:16 14:16 -12:-16 -14:-16 "
+
+      MixerBaseline:    0.0              #distance from tgt to flux window needs to be set if using histogram flx
+     FiducialCut:      "none"           #config string for fiducial cut (ROOT geom units cm)
+                                        # e.g. "mzcyl:(20,30),50,{200,600}"
+     GeomScan:         "default"        #configure how GENIE scans the geometry for maximum path lengths
+                                        # "box: 200 200 1.1 0"       # default # 200 points, 200 rays, 1.1 safety factor, no XML output
+                                        # "flux: 10000 1.1 0"        # 10k rays, 1.1 fudge, 0 don't write result as XML
+                                        # "file: maxpathlength.xml"  # read XML file
+     DebugFlags:       0                #no debug flags on by default
+     ProductionMode:   "true"           #for GENIE 2.10.X uses Messenger_whisper.xml"
+     GENIEMsgThresholds: "Messenger_production.xml" #for GENIE 2.10.X uses Messenger_production.xml" from genie_phyopt
+}
+
+
+#==============================================================================================================
+#---------------------------------------------- Flux Histograms------------------------------------------------
+
+# Genie histogram near detector. Normal horn current
+genie_histogram_nd:                                     @local::standard_genie
+genie_histogram_nd.EventsPerSpill:                      0
+genie_histogram_nd.POTPerSpill:                         2.5e13 #Originally 5e13
+genie_histogram_nd.FluxType:                            "histogram"
+genie_histogram_nd.FluxFiles:                           [ "nd3850-me--8--5-967.root" ]
+genie_histogram_nd.BeamName:                            "numi"
+genie_histogram_nd.DetectorLocation:                    "NOvA-ND"
+genie_histogram_nd.BeamRadius:                          2.413
+genie_histogram_nd.BeamCenter:                          [0.0115, 0.058     , -1.0]
+genie_histogram_nd.BeamDirection:                       [0.0115, -0.0583497,  0.99823]
+genie_histogram_nd.SurroundingMass:                     2.4978e4
+# Genie histogram NDOS. Normal horn current
+genie_histogram_ndos:                                   @local::standard_genie
+genie_histogram_ndos.EventsPerSpill:                    1
+genie_histogram_ndos.POTPerSpill:                       0
+genie_histogram_ndos.FluxType:                          "histogram"
+genie_histogram_ndos.FluxFiles:                         [ "L010z185i_lowthr_ipndshed.root" ]
+genie_histogram_ndos.BeamName:                          "numi"
+genie_histogram_ndos.DetectorLocation:                  "NOvA-NDOS"
+genie_histogram_ndos.BeamRadius:                        4.744
+genie_histogram_ndos.BeamCenter:                        [0.0  , 1.18799, -0.3521]
+genie_histogram_ndos.BeamDirection:                     [0.015, 0.104  ,  0.99446]
+genie_histogram_ndos.SurroundingMass:                   1.0
+
+# Genie histogram far detector. Normal horn current
+genie_histogram_fd:                                     @local::standard_genie
+genie_histogram_fd.EventsPerSpill:                      1
+genie_histogram_fd.POTPerSpill:                         0
+genie_histogram_fd.FluxType:                            "histogram"
+genie_histogram_fd.FluxFiles:                           [ "ashriver-me-11.8-0.0-810.0.root" ]
+genie_histogram_fd.DetectorLocation:                    "NOvA-FD"
+genie_histogram_fd.BeamName:                            "numi"
+genie_histogram_fd.BeamRadius:                          10.0
+genie_histogram_fd.BeamCenter:                          [0.0  , 0.0      , 0.0]
+genie_histogram_fd.BeamDirection:                       [0.014, 0.0583497, 0.998198]
+
+
+#==============================================================================================================
+#---------------------------------------------- Simple Flux ---------------------------------------------------
+
+# Near detector
+genie_simpleflux_nd:                           @local::standard_genie
+genie_simpleflux_nd.EventGeneratorList:        "DefaultPlusCCMEC"
+genie_simpleflux_nd.EventsPerSpill:             0
+genie_simpleflux_nd.POTPerSpill:                2.5e13 #Originally 5e13
+genie_simpleflux_nd.FluxType:                  "simple_flux"
+genie_simpleflux_nd.BeamName:                  "numi"
+genie_simpleflux_nd.DetectorLocation:          "NOvA-ND"
+genie_simpleflux_nd.FluxSearchPaths:           "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/nd/mn/fhc"
+
+# Near detector reverse horn current
+genie_simpleflux_nd_rhc:                       @local::genie_simpleflux_nd
+genie_simpleflux_nd_rhc.FluxSearchPaths:       "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/nd/mn/rhc"
+
+# Near detector horn-off (0hc)
+genie_simpleflux_nd_0hc:                       @local::genie_simpleflux_nd
+genie_simpleflux_nd_0hc.FluxSearchPaths:       "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/nd/mn/0hc"
+
+# NDOS
+genie_simpleflux_ndos:                         @local::genie_simpleflux_nd
+genie_simpleflux_ndos.EventGeneratorList:      "Default"
+genie_simpleflux_ndos.EventsPerSpill:          1
+genie_simpleflux_ndos.POTPerSpill:             0
+genie_simpleflux_ndos.DetectorLocation:        "NOvA-NDOS"
+genie_simpleflux_ndos.FluxSearchPaths:         "${PNFS_NOVA_DATA}/flux/gsimple/nova_v02/ndos/le/fhc"
+
+# NDOS reverse horn current
+genie_simpleflux_ndos_rhc:                     @local::genie_simpleflux_ndos
+genie_simpleflux_ndos_rhc.FluxSearchPaths:     "${PNFS_NOVA_DATA}/flux/gsimple/nova_v02/ndos/le/rhc"
+
+# FAR detector forward horn current
+genie_simpleflux_fd:                           @local::genie_simpleflux_nd
+genie_simpleflux_fd.EventsPerSpill:            1
+genie_simpleflux_fd.POTPerSpill:               0
+
+genie_simpleflux_fd.DetectorLocation:          "NOvA-FD"
+genie_simpleflux_fd.FluxSearchPaths:           "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/fd/mn/fhc"
+
+# FAR detector reverse horn current
+genie_simpleflux_fd_rhc:                       @local::genie_simpleflux_fd
+genie_simpleflux_fd_rhc.FluxSearchPaths:       "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/fd/mn/rhc"
+
+# FAR detector horn-off (0hc)
+genie_simpleflux_fd_0hc:                       @local::genie_simpleflux_fd
+genie_simpleflux_fd_0hc.FluxSearchPaths:       "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/fd/mn/0hc"
+
+# Booster NDOS Reverse horn current
+genie_simpleflux_booster_ndos_rhc:             @local::genie_simpleflux_ndos
+genie_simpleflux_booster_ndos_rhc.BeamName:    booster
+genie_simpleflux_booster_ndos_rhc.FluxSearchPaths: "${PNFS_NOVA_DATA}/flux/gsimple/nova_v02/ndos/bnb/rhc"
+
+#==============================================================================================================
+#-------------------------------------------- MEC generation -------------------------------------------------
+
+#CCMEC
+# Near detector (CCMEC)
+genie_simpleflux_nd_ccmec:                         @local::genie_simpleflux_nd
+genie_simpleflux_nd_ccmec.EventGeneratorList:      "CCMEC"
+genie_simpleflux_nd_ccmec.EventsPerSpill:          1
+genie_simpleflux_nd_ccmec.POTPerSpill:             0
+
+# Near detector reverse horn current (CCMEC)
+
+# Near detector reverse horn current (CCMEC)
+genie_simpleflux_nd_rhc_ccmec:                     @local::genie_simpleflux_nd_ccmec
+genie_simpleflux_nd_rhc_ccmec.FluxSearchPaths:     "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/nd/mn/rhc"
+
+# Near detector horn-off (0hc) (CCMEC)
+genie_simpleflux_nd_0hc_ccmec:                     @local::genie_simpleflux_nd_ccmec
+genie_simpleflux_nd_0hc_ccmec.FluxSearchPaths:     "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/nd/mn/0hc"
+
+# Far detector (CCMEC)
+genie_simpleflux_fd_ccmec:                         @local::genie_simpleflux_fd
+genie_simpleflux_fd_ccmec.EventGeneratorList:      "CCMEC"
+
+# Far detector reverse horn current (CCMEC)
+genie_simpleflux_fd_rhc_ccmec:                     @local::genie_simpleflux_fd_rhc
+genie_simpleflux_fd_rhc_ccmec.EventGeneratorList:  "CCMEC"
+
+# Near detector horn-off (0hc) (CCMEC)
+genie_simpleflux_fd_0hc_ccmec:                     @local::genie_simpleflux_fd_0hc
+genie_simpleflux_fd_0hc_ccmec.EventGeneratorList:  "CCMEC"
+
+
+#==============================================================================================================
+#-------------------------------------------- Alternative intensities -----------------------------------------
+
+genie_simpleflux_nd_lowintensity:               @local::genie_simpleflux_nd
+genie_simpleflux_nd_lowintensity.POTPerSpill:   0.5e13 # 10% of full power
+
+genie_simpleflux_nd_highintensity:              @local::genie_simpleflux_nd
+genie_simpleflux_nd_highintensity.POTPerSpill:  5.0e13 # full power
+
+
+#==============================================================================================================
+#---------------------------------------------- Alternative Fluxes --------------------------------------------
+
+# Alternative locations for the NOvA Near Detector
+# NEARDET Alternative location Cavern to the west 24 mrad. Normal horn current.
+genie_simpleflux_nd_alternative_west_24mrad:           @local::genie_simpleflux_nd
+genie_simpleflux_nd_alternative_west_24mrad.FluxFiles: [ "flux/alternative_neardet_locations/fluxes_nhc/NOvA-NEARDETECTOR_XAXIS_LE_0.6.root" ]
+genie_simpleflux_nd_alternative_west_24mrad.FluxSearchPaths: ""
+
+# NEARDET Alternative location Cavern to the west 33 mrad. Normal horn current.
+genie_simpleflux_nd_alternative_west_33mrad:           @local::genie_simpleflux_nd
+genie_simpleflux_nd_alternative_west_33mrad.FluxFiles: [ "flux/alternative_neardet_locations/fluxes_nhc/NOvA-NEARDETECTOR_XAXIS_LE_1.0.root" ]
+genie_simpleflux_nd_alternative_west_33mrad.FluxSearchPaths: ""
+
+# NEARDET Alternative location Cavern to the west 24 mrad. Reverse horn current.
+genie_simpleflux_nd_alternative_west_24mrad_rhc:           @local::genie_simpleflux_nd
+genie_simpleflux_nd_alternative_west_24mrad_rhc.FluxFiles: [ "flux/alternative_neardet_locations/fluxes_rhc/NOvA-NEARDETECTOR_XAXIS_LE_0.6.root" ]
+genie_simpleflux_nd_alternative_west_24mrad_rhc.FluxSearchPaths: ""
+
+# NEARDET Alternative location Cavern to the west 33 mrad. Reverse horn current.
+genie_simpleflux_nd_alternative_west_33mrad_rhc:           @local::genie_simpleflux_nd
+genie_simpleflux_nd_alternative_west_33mrad_rhc.FluxFiles: [ "flux/alternative_neardet_locations/fluxes_rhc/NOvA-NEARDETECTOR_XAXIS_LE_1.0.root" ]
+genie_simpleflux_nd_alternative_west_33mrad_rhc.FluxSearchPaths: ""
+
+
+#==============================================================================================================
+#---------------------------------------------- Rock Generation ---------------------------------------------------
+
+# NDOS LE FHC
+genie_simpleflux_ndos_rockonly_lefhc:                @local::genie_simpleflux_ndos
+genie_simpleflux_ndos_rockonly_lefhc.FluxUpstreamZ:  -100000
+genie_simpleflux_ndos_rockonly_lefhc.ZCutOff:        +100000
+genie_simpleflux_ndos_rockonly_lefhc.TopVolume:      "vWorld"
+genie_simpleflux_ndos_rockonly_lefhc.FluxSearchPaths:"${PNFS_NOVA_DATA}/flux/gsimple/nova_v04/ndosrock/le/fhc"
+genie_simpleflux_ndos_rockonly_lefhc.GeomScan:       "file: Geometry/maxpathlengths/NOvA_NDOS-ROCK.maxpl.xml"
+genie_simpleflux_ndos_rockonly_lefhc.FiducialCut:    "rockbox: ( -596.9000, -196.8150, -177.0888 )(  596.9000,  443.2650, 1707.1848 ) 1, 800, 4.4732e-3, 1.10"
+
+genie_simpleflux_ndos_rockdet_lefhc:                 @local::genie_simpleflux_ndos_rockonly_lefhc
+genie_simpleflux_ndos_rockdet_lefhc.FiducialCut:     "rockbox: ( -596.9000, -196.8150, -177.0888 )(  596.9000,  443.2650, 1707.1848 ) 0, 800, 4.4732e-3, 1.10"
+
+# NDOS LE RHC
+genie_simpleflux_ndos_rockonly_lerhc:                @local::genie_simpleflux_ndos_rockonly_lefhc
+genie_simpleflux_ndos_rockonly_lerhc.FluxSearchPaths: "${PNFS_NOVA_DATA}/flux/gsimple/nova_v04/ndosrock/le/rhc"
+
+genie_simpleflux_ndos_rockdet_lerhc:                 @local::genie_simpleflux_ndos_rockdet_lefhc
+genie_simpleflux_ndos_rockdet_lerhc.FluxSearchPaths: "${PNFS_NOVA_DATA}/flux/gsimple/nova_v04/ndosrock/le/rhc"
+
+# NDOS MN FHC
+genie_simpleflux_ndos_rockonly_mnfhc:                @local::genie_simpleflux_ndos_rockonly_lefhc
+genie_simpleflux_ndos_rockonly_mnfhc.FluxSearchPaths: "${PNFS_NOVA_DATA}/flux/gsimple/nova_v04/ndosrock/mn/fhc"
+
+genie_simpleflux_ndos_rockdet_mnfhc:                 @local::genie_simpleflux_ndos_rockdet_lefhc
+genie_simpleflux_ndos_rockdet_mnfhc.FluxSearchPaths: "${PNFS_NOVA_DATA}/flux/gsimple/nova_v04/ndosrock/mn/fhc"
+
+# ND MN FHC
+genie_simpleflux_nd_rockonly_mnfhc:                    @local::genie_simpleflux_nd
+genie_simpleflux_nd_rockonly_mnfhc.EventGeneratorList: "Default"
+genie_simpleflux_nd_rockonly_mnfhc.FluxUpstreamZ:      -100000
+genie_simpleflux_nd_rockonly_mnfhc.ZCutOff:            +100000
+genie_simpleflux_nd_rockonly_mnfhc.TopVolume:          "vWorld"
+
+genie_simpleflux_nd_rockonly_mnfhc.FluxSearchPaths:    "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/ndrock/mn/fhc"
+genie_simpleflux_nd_rockonly_mnfhc.GeomScan:           "file: Geometry/maxpathlengths/NOvA_NEAR-ROCK.maxpl.xml"
+genie_simpleflux_nd_rockonly_mnfhc.FiducialCut:        "rockbox: ( -304.8000, -196.6350, -464.8200 )(  304.8000,  382.4850, 1821.1800 ) 1, 800, 4.4732e-3, 1.10"
+
+# ND one rock event per 'spill' MN FHC
+genie_simpleflux_nd_singlerock_mnfhc:                    @local::genie_simpleflux_nd
+genie_simpleflux_nd_singlerock_mnfhc.EventGeneratorList: "Default"
+genie_simpleflux_nd_singlerock_mnfhc.EventsPerSpill:     1
+genie_simpleflux_nd_singlerock_mnfhc.POTPerSpill:        0
+genie_simpleflux_nd_singlerock_mnfhc.FluxUpstreamZ:      -100000
+genie_simpleflux_nd_singlerock_mnfhc.ZCutOff:            +100000
+genie_simpleflux_nd_singlerock_mnfhc.TopVolume:          "vWorld"
+genie_simpleflux_nd_singlerock_mnfhc.FluxSearchPaths:    "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/ndrock/mn/fhc"
+genie_simpleflux_nd_singlerock_mnfhc.GeomScan:           "file: Geometry/maxpathlengths/NOvA_NEAR-ROCK.maxpl.xml"
+genie_simpleflux_nd_singlerock_mnfhc.FiducialCut:        "rockbox: ( -304.7000, -196.6350, -464.8200 )(  304.8000,  382.4850, 1821.1800 ) 1, 800, 4.4732e-3, 1.10"
+
+
+genie_simpleflux_nd_rockdet_mnfhc:                   @local::genie_simpleflux_nd_rockonly_mnfhc
+genie_simpleflux_nd_rockdet_mnfhc.FiducialCut:       "rockbox: ( -304.8000, -196.6350, -464.8200 )(  304.8000,  382.4850, 1821.1800 ) 0, 800, 4.4732e-3, 1.10"
+
+# ND MN RHC
+genie_simpleflux_nd_rockonly_mnrhc:                  @local::genie_simpleflux_nd_rockonly_mnfhc
+genie_simpleflux_nd_rockonly_mnrhc.FluxSearchPaths:  "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/ndrock/mn/rhc"
+
+genie_simpleflux_nd_rockdet_mnrhc:                   @local::genie_simpleflux_nd_rockdet_mnfhc
+genie_simpleflux_nd_rockdet_mnrhc.FluxSearchPaths:   "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/ndrock/mn/rhc"
+
+# ND one rock event per 'spill' MN RHC
+genie_simpleflux_nd_singlerock_mnrhc:                @local::genie_simpleflux_nd_singlerock_mnfhc
+genie_simpleflux_nd_singlerock_mnrhc.FluxSearchPaths:"${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/ndrock/mn/rhc"
+
+
+# FD MN FHC
+genie_simpleflux_fd_rockonly_mnfhc:                    @local::genie_simpleflux_fd
+
+genie_simpleflux_fd_rockonly_mnfhc.EventGeneratorList: "Default"
+genie_simpleflux_fd_rockonly_mnfhc.FluxUpstreamZ:      -100000
+genie_simpleflux_fd_rockonly_mnfhc.ZCutOff:            +100000
+genie_simpleflux_fd_rockonly_mnfhc.TopVolume:          "vWorld"
+genie_simpleflux_fd_rockonly_mnfhc.FluxSearchPaths:    "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/fdrock/mn/fhc"
+genie_simpleflux_fd_rockonly_mnfhc.GeomScan:           "file: Geometry/maxpathlengths/NOvA_FAR-ROCK.maxpl.xml"
+genie_simpleflux_fd_rockonly_mnfhc.FiducialCut:        "rockbox: ( -890.2598, -782.3500, -0.0000 )( 1029.9802, 1285.1998, 8473.4400 ) 1, 800, 4.4732e-3, 1.10"
+
+genie_simpleflux_fd_rockdet_mnfhc:                   @local::genie_simpleflux_fd_rockonly_mnfhc
+genie_simpleflux_fd_rockdet_mnfhc.FiducialCut:       "rockbox: ( -890.2598, -782.3500, -0.0000 )( 1029.9802, 1285.1998, 8473.4400 ) 0, 800, 4.4732e-3, 1.10"
+
+# FD MN RHC
+genie_simpleflux_fd_rockonly_mnrhc:                  @local::genie_simpleflux_fd_rockonly_mnfhc
+genie_simpleflux_fd_rockonly_mnrhc.FluxSearchPaths:  "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/fdrock/mn/rhc"
+
+genie_simpleflux_fd_rockdet_mnrhc:                   @local::genie_simpleflux_fd_rockdet_mnfhc
+genie_simpleflux_fd_rockdet_mnrhc.FluxSearchPaths:   "${PNFS_NOVA_DATA}/flux/gsimple/${NOVA_FLUX_VERSION}/fdrock/mn/rhc"
+
+END_PROLOG

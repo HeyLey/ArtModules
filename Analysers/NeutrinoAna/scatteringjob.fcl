@@ -1,0 +1,31 @@
+#include "ScatteringAnalyzer.fcl"
+#include "services.fcl"
+
+process_name: NeuAnaProcess
+services: {
+ TFileService: { fileName: "scat_hist.root" closeFileFast: false }
+}
+
+source: {
+   module_type: RootInput
+}
+
+#outputs:
+#{
+# out1:
+#  {
+ #   module_type: RootOutput
+ #   fileName:    "scat_ana.root"
+
+#  }
+#}
+
+physics:
+{
+    analyzers:{
+        scatana:  @local::standard_scatana
+    }
+
+    ana: [ scatana ]
+    end_paths: [ ana ]
+}

@@ -1,0 +1,21 @@
+#include "NeutronAnalyzer.fcl"
+#include "services.fcl"
+
+process_name: NeuAnaProcess
+services: {
+ TFileService: { fileName: "neutrons_hist.root" closeFileFast: false }
+}
+
+source: {
+   module_type: RootInput
+}
+
+physics:
+{
+    analyzers:{
+        neutronana:  @local::standard_neutronana
+    }
+
+    ana: [ muonana ]
+    end_paths: [ ana ]
+}
