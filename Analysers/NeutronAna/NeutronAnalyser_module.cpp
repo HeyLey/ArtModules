@@ -109,4 +109,6 @@ void leyla::NeutronAnalyzer::analyze(art::Event const & e) {
     // std::cout<<"Summary energy of all photons: "<<sum_energy<<"\n"<<std::endl;
 }
 
-DEFINE_ART_MODULE(leyla::NeutronAnalyzer)
+namespace leyla {
+      DEFINE_ART_MODULE(leyla::NeutronAnalyzer);
+}

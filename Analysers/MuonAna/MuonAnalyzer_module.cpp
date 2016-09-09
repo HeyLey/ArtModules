@@ -102,4 +102,6 @@ void leyla::MuonAnalyzer::analyze(art::Event const & e) {
     //std::cout<<"Summary energy of all photons: "<<summary_energy<<"\n"<<std::endl;
 }
 
-DEFINE_ART_MODULE(leyla::MuonAnalyzer)
+namespace leyla {
+    DEFINE_ART_MODULE(leyla::MuonAnalyzer);
+}

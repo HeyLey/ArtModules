@@ -234,5 +234,6 @@ std::cout << "" << std::endl;
 std::cout << "" << std::endl;
 }
 
-
-DEFINE_ART_MODULE(leyla::ScatteringAnalyzer)
+namespace leyla {
+    DEFINE_ART_MODULE(leyla::ScatteringAnalyzer);
+}

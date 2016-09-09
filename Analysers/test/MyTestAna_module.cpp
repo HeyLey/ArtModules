@@ -148,4 +148,6 @@ void mytest::MyTestAna::analyze(art::Event const & e) {
 
 }
 
-DEFINE_ART_MODULE(mytest::MyTestAna)
+namespace mytest {
+    DEFINE_ART_MODULE(mytest::MyTestAna);
+}
